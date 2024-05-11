@@ -15,12 +15,15 @@ class Window:
         self._tk_root.title("Raytracer")
         self._tk_root.protocol("WM_DELETE_WINDOW", lambda: self._die(self._tk_root))
 
-        self._tk_canvas = tk.Canvas(self._tk_root, width=self.width, height=self.height)
+        self._tk_canvas = tk.Canvas(self._tk_root, width=self.width, height=self.height, bg="#000000")
         self._tk_canvas.pack(padx=0, pady=0, expand=True)
         self._tk_image = tk.PhotoImage(width=self.width, height=self.height)
-        self._tk_canvas.create_image(self.width // 2, self.height // 2, image=self._tk_image, state='normal')
+        self._tk_canvas.create_image((self.width // 2, self.height // 2), image=self._tk_image, state='normal')
 
         self._tk_alive: bool = True
+
+        # make the window appear
+        self.update()
 
     def _die(self, win):
         """
@@ -40,3 +43,13 @@ class Window:
         """
 
         self._tk_root.update()
+
+    def plot(self, x: float | int, y: float | int, color: tuple[int, int, int]):
+        """
+        Plots a pixel to the window. Without bound checks
+        :param x: x position
+        :param y: y position
+        :param color: color to plot (r, g, b)
+        """
+
+        self._tk_image.put(f"#{color[0]:02X}{color[1]:02X}{color[2]:02X}", (int(x), int(y)))
