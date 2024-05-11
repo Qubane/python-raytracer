@@ -7,8 +7,11 @@ class Window:
     """
 
     def __init__(self, width: int, height: int):
+        # window things
         self.width: int = width
         self.height: int = height
+        self.buffer: list[float] | None = None
+        self.clear()
 
         # tkinter part
         self._tk_root = tk.Tk()
@@ -23,7 +26,7 @@ class Window:
         self._tk_alive: bool = True
 
         # make the window appear
-        self.update()
+        self.semi_update()
 
     def _die(self, win):
         """
@@ -37,12 +40,29 @@ class Window:
     def alive(self):
         return self._tk_alive
 
-    def update(self):
+    def semi_update(self):
         """
-        Updates the window
+        Updates the window, but just so it wouldn't freeze
         """
 
         self._tk_root.update()
+
+    def update(self):
+        """
+        Actual window update, updates the image
+        """
+
+        self._tk_image.configure(
+            data=f'P6 {self.width} {self.height} 255 '.encode() +
+                 bytearray(map(lambda x: int(min(255, max(0, x * 255))), self.buffer)))
+        self._tk_root.update()
+
+    def clear(self):
+        """
+        Clears the image buffer
+        """
+
+        self.buffer = [0 for _ in range(self.width * self.height * 3)]
 
     def plot(self, x: float | int, y: float | int, color: tuple[int, int, int]):
         """
@@ -52,4 +72,18 @@ class Window:
         :param color: color to plot (r, g, b)
         """
 
-        self._tk_image.put(f"#{color[0]:02X}{color[1]:02X}{color[2]:02X}", (int(x), int(y)))
+        self.buffer[(int(x) + int(y) * self.width) * 3 - 2] = color[0] / 255
+        self.buffer[(int(x) + int(y) * self.width) * 3 - 1] = color[1] / 255
+        self.buffer[(int(x) + int(y) * self.width) * 3] = color[2] / 255
+
+    def plot_unit(self, x: float | int, y: float | int, color: tuple[float, float, float]):
+        """
+        Plots a pixel to the window. Without bound checks. Color is in range 0.0 - 1.0
+        :param x: x position
+        :param y: y position
+        :param color: color to plot (unit r, g, b)
+        """
+
+        self.buffer[(int(x) + int(y) * self.width) * 3 - 2] = color[0]
+        self.buffer[(int(x) + int(y) * self.width) * 3 - 1] = color[1]
+        self.buffer[(int(x) + int(y) * self.width) * 3] = color[2]
