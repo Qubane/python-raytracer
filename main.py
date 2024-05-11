@@ -1,8 +1,8 @@
-import tkinter as tk
+from src import *
 
 
 def main():
-    pass
+    win = Window()
 
 
 if __name__ == '__main__':
