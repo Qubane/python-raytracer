@@ -11,8 +11,8 @@ def main():
                 win.plot_unit(x, y, (x / win.width, int(count / 255) & 255, y / win.height))
         win.update()
         count += 1
-        print(count & 255)
-        sleep(0.033)
+        print(count)
+        # sleep(0.033)
 
 
 if __name__ == '__main__':
