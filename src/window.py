@@ -54,7 +54,7 @@ class Window:
 
         self._tk_image.configure(
             data=f'P6 {self.width} {self.height} 255 '.encode() +
-                 bytearray(map(lambda x: int(x * 255), self.buffer)))
+                 bytearray(map(lambda x: min(255, max(0, x * 255)), self.buffer)))
         self._tk_root.update()
 
     def clear(self):
