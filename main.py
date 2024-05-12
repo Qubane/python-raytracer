@@ -3,10 +3,8 @@ from time import sleep
 
 
 def main():
-    win = Window(480, 360)
-    while win.alive:
-        win.update()
-        # sleep(0.033)
+    app = Application(width=480, height=360)
+    app.run()
 
 
 if __name__ == '__main__':
